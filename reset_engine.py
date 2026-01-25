@@ -154,13 +154,18 @@ class ResetEngine:
         storage_path = self.cursor_paths["storage"]
         
         try:
+            parse_warning = ""
             if not storage_path.exists():
                 # Create parent directory if needed
                 storage_path.parent.mkdir(parents=True, exist_ok=True)
                 data = {}
             else:
-                with open(storage_path, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
+                try:
+                    with open(storage_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                except json.JSONDecodeError:
+                    data = {}
+                    parse_warning = " (storage.json was invalid and has been rebuilt)"
             
             # Generate new identifiers
             new_machine_id = str(uuid.uuid4())
@@ -187,7 +192,7 @@ class ResetEngine:
             with open(storage_path, 'w', encoding='utf-8') as f:
                 json.dump(data, f, indent=2)
             
-            return True, f"Reset machineId, macMachineId, devDeviceId in storage.json"
+            return True, f"Reset machineId, macMachineId, devDeviceId in storage.json{parse_warning}"
         
         except Exception as e:
             return False, f"Storage reset failed: {str(e)}"

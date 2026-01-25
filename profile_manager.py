@@ -139,8 +139,11 @@ class ProfileManager:
             
             # Read existing storage.json or create new
             if storage_path.exists():
-                with open(storage_path, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
+                try:
+                    with open(storage_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                except json.JSONDecodeError:
+                    data = {}
             else:
                 data = {}
             

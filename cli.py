@@ -206,7 +206,9 @@ Examples:
     # Reset command
     reset_parser = subparsers.add_parser("reset", help="Reset identifiers")
     reset_parser.add_argument("--backup", action="store_true", help="Create backup before reset")
-    reset_parser.add_argument("--kill-processes", action="store_true", default=True, help="Kill Cursor processes")
+    reset_parser.add_argument("--no-kill-processes", dest="kill_processes", action="store_false",
+                              help="Skip killing Cursor processes before reset")
+    reset_parser.set_defaults(kill_processes=True)
     
     # Backup command
     backup_parser = subparsers.add_parser("backup", help="Create backup")
